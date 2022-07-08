@@ -1,0 +1,40 @@
+<div (contextmenu)="onRightClick()">
+    <section class="hero-section d-flex">
+
+        <div class="overlay"></div>
+        <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+    <source src="https://cdn.artlist.io/artlist-images/414464_Artlist_Trial_Slider_02.mp4" type="video/mp4">
+  </video>
+        <div class="containerr h-100">
+            <div class="d-flex h-100 text-left align-items-center">
+                <div class="offset-md-1"></div>
+                <div class="text-container col-10">
+                    <h1>Start Using <mark>Music</mark> In</h1>
+                    <h1>Your <mark>Projects</mark></h1>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <div class="section">
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="offset-md-1"></div>
+
+            <div class="col-10 col-mdr-12">
+                <app-song-card *ngFor="let song of songs; let i = index" [song]="song" [user]="user" (songAddToCart)="addToCart($event)" (songAddToPlaylist)="addToPlaylist($event)" @songCardTrigger></app-song-card>
+                <app-fetching (bottom)="loadSong()" *ngIf="page<=noPage"></app-fetching>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Users -->
+<app-users (contextmenu)="onRightClick()"></app-users>
+
+<!-- Router -->
+<router-outlet></router-outlet>

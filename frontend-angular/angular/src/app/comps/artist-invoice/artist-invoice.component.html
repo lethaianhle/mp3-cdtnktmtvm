@@ -1,0 +1,88 @@
+<title>
+    A simple, clean, and responsive HTML invoice template</title>
+
+<div class="invoice-box">
+    <table cellpadding="0" cellspacing="0">
+        <tr class="top">
+            <td colspan="2">
+                <table>
+                    <tr>
+                        <td class="title">
+                            <img src="assets/images/logo.svg" style="width: 100%; max-width: 300px" />
+                        </td>
+
+                        <td>
+                            Invoice #: 123<br /> Created: {{ DetailsInvoice.date }}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr class="information">
+            <td colspan="2">
+                <table>
+                    <tr>
+
+
+                        <td>
+                            Payee:<br /> {{auth.getUser().email}} <br /> {{auth.getUser().username}} <br />
+                            <!-- <invoice class="payerInfo"></invoice>.email}} -->
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr class="heading">
+            <td>Payment Method</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        <tr class="details">
+            <td>Paypal</td>
+        </tr>
+
+        <tr class="heading">
+            <td>Item</td>
+
+            <td>Price</td>
+
+            <td>Checkouts</td>
+
+            <td>Total</td>
+        </tr>
+
+        <tr class="item" *ngFor="let item of DetailsInvoice.items">
+            <td>
+                {{ item.songName }}
+            </td>
+
+            <td>${{ item.price }}</td>
+            <td>{{ item.checkoutTimes }}</td>
+            <td>${{ item.total }}</td>
+        </tr>
+
+        <tr class="total">
+            <td></td>
+
+            <td>Subtotal: ${{ DetailsInvoice.subtotal.toFixed(1)}}</td>
+
+        </tr>
+        <tr class="total">
+            <td></td>
+
+
+            <td>Fee (20%): ${{ (DetailsInvoice.total*0.2).toFixed(1)}}</td>
+
+        </tr>
+        <tr class="total">
+            <td></td>
+
+
+            <td>Total: ${{DetailsInvoice.total}}</td>
+        </tr>
+    </table>
+</div>

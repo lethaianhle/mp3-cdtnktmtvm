@@ -1,0 +1,47 @@
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+
+<div class="container">
+    <h4>Manage Artist</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <!-- <th></th> -->
+                <th>Id</th>
+                <th>Name</th>
+                <th>Paypal Account</th>
+                <th>Total money</th>
+                <th>Is Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--   for (Todo todo: todos) {  -->
+            <tr *ngFor="let artist of artists;let i = index">
+                <td>{{ artist.id }}</td>
+                <td>{{ artist.artistName }}</td>
+                <td>{{ artist.paypalAccount }}</td>
+                <td>{{ (artist.payslip).toFixed(1) }}</td>
+                <td>{{ artist.active }}</td>
+                <td>
+                    <button [disabled]="artist.payslip==0" (click)="checkout(artist.id,artist.paypalAccount,artist.payslip,artist.userId)" class="btn btn-success">
+                        Pay
+                      </button>
+                    <button *ngIf="artist.active" (click)="disableArtist(artist.id,i)" class="btn btn-warning">
+            Disable
+          </button>
+                    <button *ngIf="!artist.active" (click)="enableArtist(artist.id,i)" class="btn btn-success">
+            Enable
+          </button>
+                </td>
+            </tr>
+            <!-- } -->
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" *ngFor="let page of pageNumber"><a class="page-link" (click)="getPageArtist(page-1)">{{page}}</a></li>
+        </ul>
+    </nav>
+</div>
