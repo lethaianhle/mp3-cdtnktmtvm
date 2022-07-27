@@ -77,7 +77,7 @@ public class CartController {
 	@GetMapping("/count")
 	public int getTotalItem(@RequestHeader (name="Authorization") String token)
 	{
-		String username = jwtUtils.getUserNameFromJwtToken(token.substring(7, token.length()));
+		String username = jwtUtils.getUserNameFromJwtToken(token.substring(7));
 		Optional<User> user = userRepository.findByUsername(username);
 		if(user.isPresent())
 			return cartItemRepository.countByUserId(user.get().getId().intValue());

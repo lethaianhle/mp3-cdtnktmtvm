@@ -209,7 +209,7 @@ onKey()
     for (let i = 0; i < this.uploadForm.value.tags.length; i++) {
       
     }
-    fd.append("tags[]", this.uploadForm.value.tags);
+    fd.append("tags", this.uploadForm.value.tags);
     fd.append("price", this.uploadForm.value.price);
    
     fd.append("song", this.file);

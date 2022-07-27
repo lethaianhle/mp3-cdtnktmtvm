@@ -134,7 +134,7 @@ export class UserSongCartComponent implements OnInit {
     let index = song.url.lastIndexOf("/");
     let keyname = song.url.substring(index + 1);
     let params = {
-      Bucket: "thanhproject",
+      Bucket: "mp3-songs-bucket",
       Key: keyname,
     };
     this.cartService.bucket

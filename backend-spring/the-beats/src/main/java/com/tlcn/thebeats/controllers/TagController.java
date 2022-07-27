@@ -2,6 +2,7 @@ package com.tlcn.thebeats.controllers;
 
 import java.util.List;
 
+import com.tlcn.thebeats.models.Artist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -55,11 +56,12 @@ public class TagController {
 		return tagRepo.save(tag);
 	}
 
-//	@GetMapping("/list-tag")
-//	public Page<Tag> getPaginationTag(@RequestParam int page)
-//	{
-//		Pageable pageable = PageRequest.of(page, 5);
-//		return tagRepo.findAll(pageable);
-//	}
+	@GetMapping("/list-tag")
+	public List<Tag> getPageArtist(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "100") int size)
+	{
+		Pageable paging = PageRequest.of(page, size);
+		Page<Tag> pageTag= tagRepo.findAll(paging);
+		return pageTag.getContent();
+	}
 
 }

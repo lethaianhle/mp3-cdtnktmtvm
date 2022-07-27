@@ -107,6 +107,12 @@ public class ArtistController {
 	{
 		return artistRepository.findById(id).get();
 	}
+
+	@GetMapping("/count-artist")
+	public int countArtist()
+	{
+		return (int) artistRepository.count();
+	}
 	
 	@GetMapping("/count-active-artist")
 	public int countActiveArtist()
@@ -121,11 +127,26 @@ public class ArtistController {
 		Page<Artist> pageArtist= artistRepository.findActiveArtist(paging);
 		return pageArtist.getContent();
 	}
+
+	@GetMapping("/list-artist")
+	public List<Artist> getPageArtist(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "100") int size)
+	{
+		Pageable paging = PageRequest.of(page, size);
+		Page<Artist> pageArtist= artistRepository.findAll(paging);
+		return pageArtist.getContent();
+	}
 	
 	@PostMapping("disable")
 	public Artist disableArtist(@RequestBody int id) {
 		Artist artist = artistRepository.findById(id).orElseThrow(()-> new RuntimeException("Artist not found"));
 		artist.setActive(false);
+		return artistRepository.save(artist);
+	}
+
+	@PostMapping("enable")
+	public Artist enableArtist(@RequestBody int id) {
+		Artist artist = artistRepository.findById(id).orElseThrow(()-> new RuntimeException("Artist not found"));
+		artist.setActive(true);
 		return artistRepository.save(artist);
 	}
 	
