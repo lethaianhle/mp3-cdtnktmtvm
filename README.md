@@ -53,6 +53,13 @@ paypal.client.id=AViMt95oW_Ef1jFjybHsRhU0a1jA0MnDo91w963ygkeNwaDTQtbd_2gXPV2QV4M
 paypal.client.secret=EMrCuvn7vNqI0vdPk1teuVhTxqXG88zl0cCWw2gIsvT6bKVCo0xApR5M-QidYVmmXKqLBK57FnXoRL_i
 ```
 
+### Import database
+
+```python
+use thebeats;
+{paste data in datadump.sql here}
+```
+
 ### Good First Issues
 
 To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://stackoverflow.com/) that contain bugs that have a relatively limited scope. This is a great place to get started.
