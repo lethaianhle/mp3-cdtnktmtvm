@@ -49,8 +49,8 @@ spring.servlet.multipart.max-file-size=10MB
 spring.servlet.multipart.max-request-size=10MB
 
 paypal.mode=sandbox
-paypal.client.id=AViMt95oW_Ef1jFjybHsRhU0a1jA0MnDo91w963ygkeNwaDTQtbd_2gXPV2QV4M-9PDTFSeUVozBB_EK
-paypal.client.secret=EMrCuvn7vNqI0vdPk1teuVhTxqXG88zl0cCWw2gIsvT6bKVCo0xApR5M-QidYVmmXKqLBK57FnXoRL_i
+paypal.client.id= {your_paypal_client_id}
+paypal.client.secret= {your_paypal_secret_key}
 ```
 
 ### Import database
