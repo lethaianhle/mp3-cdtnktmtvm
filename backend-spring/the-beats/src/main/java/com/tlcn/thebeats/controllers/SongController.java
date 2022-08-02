@@ -148,11 +148,12 @@ public class SongController {
 			});
 		}
 		
-		Song song = new Song(title, url,price);
+		Song song = new Song(title, url, price);
 		
 		song.setTags(listTag);
 		Artist artist= artistRepository.findById(artistId).orElseThrow(()->new RuntimeException("artist not found"));
 		song.setArtist(artist);
+		song.setArtistName(artist.getArtistName());
 		song.setAvatarImage(urlImage);
 		
 		Song songSaved =songRepo.save(song);
@@ -196,15 +197,23 @@ public class SongController {
 		return songRepo.checkSongPayed(isSongPayedRequest.getUserId(), isSongPayedRequest.getSongId());
 	}
 	
-	  @GetMapping("/download")
-	  public ResponseEntity<byte[]> downloadFile(@RequestParam String keyname) {
+	@GetMapping("/download")
+	public ResponseEntity<byte[]> downloadFile(@RequestParam String keyname) {
 	    ByteArrayOutputStream downloadInputStream = amazonS3ClientService.downloadFile(keyname);
 	  
 	    return ResponseEntity.ok()
 	          .contentType(contentType(keyname))
 	          .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"" + keyname + "\"")
 	          .body(downloadInputStream.toByteArray());  
-	  }
+	}
+
+	@PostMapping("/ban-song/{id}")
+	public void banSong(@PathVariable Long id) {
+		Song song = songRepo.findById(id)
+				.orElseThrow(() -> new RuntimeException("Song not found with id: " + id));
+
+		song.setBanned(!song.isBanned());
+	}
 
 	private MediaType contentType(String keyname) {
 		String[] arr = keyname.split("\\.");

@@ -62,4 +62,14 @@ public class AddToCartRequest {
 	
 	private AddToCartRequest() {};
 
+	@Override
+	public String toString() {
+		return "AddToCartRequest{" +
+				"userId=" + userId +
+				", price=" + price +
+				", songId=" + songId +
+				", songName='" + songName + '\'' +
+				", avatar='" + avatar + '\'' +
+				'}';
+	}
 }

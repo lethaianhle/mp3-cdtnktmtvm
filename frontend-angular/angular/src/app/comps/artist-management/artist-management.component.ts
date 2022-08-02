@@ -91,6 +91,7 @@ export class ArtistManagementComponent implements OnInit {
     this.paymentService.checkout(paypalAccount,[],payslip,"USD","Paypal","sale","Payment for artist",`http://localhost:4200/revenue?artistId=${artistId}`).subscribe(
       res=>{
         this.link= res
+        console.log("---------:" + res);
         console.log(this.link.url)
         window.open (this.link.url.toString()),"_blank";
       }

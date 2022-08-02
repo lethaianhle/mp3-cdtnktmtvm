@@ -111,4 +111,16 @@ public class BoughtSong {
 		this.price = price;
 	};
 
+	@Override
+	public String toString() {
+		return "BoughtSong{" +
+				"id=" + id +
+				", buyerId=" + buyerId +
+				", artistId=" + artistId +
+				", songId=" + songId +
+				", isPayForArist=" + isPayForArist +
+				", date=" + date +
+				", price=" + price +
+				'}';
+	}
 }

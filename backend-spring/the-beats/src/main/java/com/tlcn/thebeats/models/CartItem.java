@@ -116,7 +116,7 @@ public class CartItem {
 	}
 
 	public int getArtistId() {
-		return artistId;
+		return this.artistId;
 	}
 
 	public void setArtistId(int artistId) {
@@ -125,4 +125,18 @@ public class CartItem {
 
 	public CartItem() {};
 
+	@Override
+	public String toString() {
+		return "CartItem{" +
+				"id=" + id +
+				", dateAdded=" + dateAdded +
+				", userId=" + userId +
+				", orderId=" + orderId +
+				", price=" + price +
+				", songId=" + songId +
+				", artistId=" + artistId +
+				", songName='" + songName + '\'' +
+				", avatar='" + avatar + '\'' +
+				'}';
+	}
 }

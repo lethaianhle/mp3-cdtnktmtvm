@@ -3,6 +3,10 @@ package com.tlcn.thebeats.payment;
 import java.util.Date;
 import java.util.List;
 
+import com.tlcn.thebeats.models.*;
+import com.tlcn.thebeats.repository.ArtistRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,10 +25,6 @@ import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.ShippingAddress;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.PayPalRESTException;
-import com.tlcn.thebeats.models.BoughtSong;
-import com.tlcn.thebeats.models.CartItem;
-import com.tlcn.thebeats.models.Tag;
-import com.tlcn.thebeats.models.User;
 import com.tlcn.thebeats.payload.response.ReviewResponse;
 import com.tlcn.thebeats.payload.response.URLResponse;
 import com.tlcn.thebeats.repository.BoughtSongRepository;
@@ -34,6 +34,8 @@ import com.tlcn.thebeats.repository.UserRepository;
 @RestController
 @CrossOrigin("*")
 public class PaypalController {
+
+	private Logger logger = LoggerFactory.getLogger(PaypalController.class);
 
 	@Autowired
 	PaypalService service;
@@ -46,6 +48,9 @@ public class PaypalController {
 
 	@Autowired
 	private BoughtSongRepository boughtSongRepository;
+
+	@Autowired
+	private ArtistRepository artistRepository;
 
 	public static final String SUCCESS_URL = "pay/success";
 
@@ -64,9 +69,10 @@ public class PaypalController {
 			PayerInfo payerInfo = payment.getPayer().getPayerInfo();
 			Transaction transaction = payment.getTransactions().get(0);
 			ShippingAddress shippingAddress = transaction.getItemList().getShippingAddress();
-
-			return new ReviewResponse(payerInfo, transaction, shippingAddress);
+			ReviewResponse reviewResponse = new ReviewResponse(payerInfo, transaction, shippingAddress);
+			return reviewResponse;
 		} catch (PayPalRESTException e) {
+			logger.info("----------", e.getMessage());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -100,25 +106,39 @@ public class PaypalController {
 	}
 
 	@GetMapping(value = SUCCESS_URL)
-	public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId,
-			@RequestParam int userId) {
+	public String successPay(@RequestParam("paymentId") String paymentId,
+							 @RequestParam("PayerID") String payerId,
+							 @RequestParam int userId) {
+		logger.info("====pay/success: paymentId:" + paymentId);
+		logger.info("====pay/success: payerId:" + payerId);
+		logger.info("====pay/success: userId:" + userId);
 		try {
 			Payment payment = service.executePayment(paymentId, payerId);
-			System.out.println(payment.toJSON());
+			logger.info("===payment: " + payment.toString());
 			if (payment.getState().equals("approved")) {
 				List<CartItem> items = cartItemRepository.findByUserId(userId);
 
 				User user = userRepository.findById((long) userId)
 						.orElseThrow(() -> new RuntimeException("User not found to add song"));
+
 				items.stream().forEach(item -> {
+					logger.info("===item: " + item.toString());
+					BoughtSong boughtSong = new BoughtSong();
+					boughtSong.setBuyerId(userId);
+					boughtSong.setArtistId(item.getArtistId());
+					boughtSong.setSongId(item.getSongId());
+					boughtSong.setDate(new Date().getTime());
+					boughtSong.setPrice(item.getPrice());
+					logger.info("===bought song: " + boughtSong.toString());
+
+					Artist artist = artistRepository.findById(item.getArtistId())
+									.orElseThrow(() -> new RuntimeException("artist not found in item!"));
+					artist.setPayslip(artist.getPayslip() + item.getPrice());
+					artistRepository.save(artist);
+
 					userRepository.saveSong(userId, item.getSongId());
-					boughtSongRepository.save(new BoughtSong(userId, item.getArtistId(), item.getSongId(),
-							new Date().getTime(), item.getPrice()));
-
-				}
-
-				);
-
+					boughtSongRepository.save(boughtSong);
+				});
 				cartItemRepository.deleteAllByUserId(userId);
 				return "";
 			}
@@ -130,19 +150,22 @@ public class PaypalController {
 	
 	
 	@GetMapping("/artist/pay/success")
-	public String artistSuccessPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId,
-			@RequestParam int userId) {
+	public String artistSuccessPay(@RequestParam("paymentId") String paymentId,
+								   @RequestParam("PayerID") String payerId,
+								   @RequestParam int userId) {
+		logger.info("====/artist/pay/success: paymentId:" + paymentId);
+		logger.info("====/artist/pay/success: payerId:" + payerId);
+		logger.info("====/artist/pay/success: userId:" + userId);
 		try {
 			Payment payment = service.executePayment(paymentId, payerId);
-			System.out.println(payment.toJSON());
+			logger.info("====/artist/pay/success: " + payment.toString());
 			if (payment.getState().equals("approved")) {
-			
 				boughtSongRepository.updatePayslip(userId);	
 				boughtSongRepository.upadteBoughtSong(userId);
 				return "";
 			}
 		} catch (PayPalRESTException e) {
-			System.out.println(e.getMessage());
+			logger.error("====/artist/pay/success: ", e.getMessage());
 		}
 		return "redirect:/";
 	}

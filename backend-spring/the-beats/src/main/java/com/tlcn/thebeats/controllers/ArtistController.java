@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,6 +48,8 @@ import com.tlcn.thebeats.security.services.AmazonS3ClientService;
 @RequestMapping("/api/v1/artist")
 @CrossOrigin("*")
 public class ArtistController {
+
+	private Logger logger = LoggerFactory.getLogger(ArtistController.class);
 
 	@Autowired
 	private ArtistRepository artistRepository; 

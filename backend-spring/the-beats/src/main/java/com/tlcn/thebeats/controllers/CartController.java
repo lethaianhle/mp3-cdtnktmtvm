@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.tlcn.thebeats.models.Song;
+import com.tlcn.thebeats.repository.ArtistRepository;
+import com.tlcn.thebeats.repository.SongRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,9 +40,17 @@ public class CartController {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private ArtistRepository artistRepository;
+
+	@Autowired
+	private SongRepository songRepository;
 	
 	@Autowired
 	private JwtUtils jwtUtils;
+
+	private Logger logger = LoggerFactory.getLogger(CartController.class);
 
 	@GetMapping("/all")
 	public List<CartItem> getAllCart() {
@@ -60,9 +73,17 @@ public class CartController {
 		Optional<CartItem> item = cartItemRepository.findByUserIdAndSongId(addToCartRequest.getUserId(),
 				addToCartRequest.getSongId());
 
+		Song song = songRepository.findById((long) addToCartRequest.getSongId())
+				.orElseThrow(() -> new RuntimeException("Song id not found in cart!"));
+		logger.info("===Artist id of song in cart: " + song.getArtist().getId());
+
 		if (!item.isPresent()) {
-			CartItem cartItem = new CartItem(new Date(), addToCartRequest.getUserId(), addToCartRequest.getPrice(),
-					addToCartRequest.getSongId(), addToCartRequest.getSongName());
+			CartItem cartItem = new CartItem(new Date(),
+					addToCartRequest.getUserId(),
+					addToCartRequest.getPrice(),
+					addToCartRequest.getSongId(),
+					song.getArtist().getId(),
+					addToCartRequest.getSongName());
 			cartItem.setAvatar(addToCartRequest.getAvatar());
 			cartItemRepository.save(cartItem);
 
